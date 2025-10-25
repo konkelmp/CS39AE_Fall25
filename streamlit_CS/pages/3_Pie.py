@@ -16,7 +16,7 @@ category_col = st.selectbox("Select category column", df.columns)
 value_col = st.selectbox("Select value column", df.columns)
 
 # Create pie chart with Plotly
-fig = px.pie(df, names=category_col, values=value_col, title="Pie Chart")
+fig = px.pie(df, names=category_col, values=value_col, title="Fruity Pie Chart")
 
 # Display chart
 st.subheader("Pie Chart")
