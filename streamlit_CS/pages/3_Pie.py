@@ -11,12 +11,8 @@ df = pd.read_csv("streamlit_CS/data/pie_demo.csv")
 st.subheader("Data Preview")
 st.dataframe(df)
 
-# Select columns for pie chart
-category_col = st.selectbox("Select category column", df.columns)
-value_col = st.selectbox("Select value column", df.columns)
-
 # Create pie chart with Plotly
-fig = px.pie(df, names=category_col, values=value_col, title="Fruity Pie Chart")
+fig = px.pie(df, names=df.columns, values=df.columns, title="Fruity Pie Chart")
 
 # Display chart
 st.subheader("Pie Chart")
