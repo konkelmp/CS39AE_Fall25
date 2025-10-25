@@ -13,7 +13,7 @@ FUN_FACTS = [
     "I’m learning all the time",
     "I want to build things",
 ]
-PHOTO_PATH = "streamlit_CS/assets/hubble-captures-vivid-auroras-in-jupiters-atmosphere_28000029525_o~small.jpg"  # Put a file in repo root or set a URL
+PHOTO_PATH = "assets/hubble-captures-vivid-auroras-in-jupiters-atmosphere_28000029525_o~small.jpg"  # Put a file in repo root or set a URL
 
 # ---------- Layout ----------
 col1, col2 = st.columns([1, 2], vertical_alignment="center")
