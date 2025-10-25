@@ -5,9 +5,7 @@ import plotly.express as px
 # Page title
 st.title("Interactive Pie Chart")
 
-# Load CSV from local repo (adjust filename as needed)
-csv_path = "data/pie_demo.csv"  # Replace with your actual CSV filename
-df = pd.read_csv(csv_path)
+df = pd.read_csv(streamlit_CS/data/pie_demo.csv)
 
 # Show the data
 st.subheader("Data Preview")
