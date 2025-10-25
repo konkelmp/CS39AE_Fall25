@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 # Page title
-st.title("Pie Chart Visualization")
+st.title("Interactive Pie Chart")
 
-# Load CSV from local repo (assuming it's in the 'data' folder)
-csv_path = "data/pie_demo.csv"  # Replace with your actual filename
+# Load CSV from local repo (adjust filename as needed)
+csv_path = "data/pie_demo.csv"  # Replace with your actual CSV filename
 df = pd.read_csv(csv_path)
 
 # Show the data
@@ -17,10 +17,9 @@ st.dataframe(df)
 category_col = st.selectbox("Select category column", df.columns)
 value_col = st.selectbox("Select value column", df.columns)
 
-# Plot pie chart
-fig, ax = plt.subplots()
-ax.pie(df[value_col], labels=df[category_col], autopct='%1.1f%%')
-ax.axis("equal")
+# Create pie chart with Plotly
+fig = px.pie(df, names=category_col, values=value_col, title="Pie Chart")
 
+# Display chart
 st.subheader("Pie Chart")
-st.pyplot(fig)
+st.plotly_chart(fig, use_container_width=True)
