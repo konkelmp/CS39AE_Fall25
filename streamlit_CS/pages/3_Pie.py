@@ -12,7 +12,7 @@ st.subheader("Data Preview")
 st.dataframe(df)
 
 # Create pie chart with Plotly
-fig = px.pie(df, names=df.columns, values=df.columns, title="Fruity Pie Chart")
+fig = px.pie(df, names=df.columns[0], values=df.columns[1], title="Fruity Pie Chart")
 
 # Display chart
 st.subheader("Pie Chart")
