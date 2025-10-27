@@ -1,10 +1,11 @@
+# Code generated with assistance from CoPilot AI for plot and debugging
+
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 import requests
 import time
 
-# --- API Setup ---
 lat, lon = 39.7392, -104.9903  # Denver
 wurl = (
     "https://api.open-meteo.com/v1/forecast"
@@ -14,7 +15,6 @@ wurl = (
     "&wind_speed_unit=mph"
 )
 
-# --- Cached API Call ---
 @st.cache_data(ttl=600)
 def get_weather():
     try:
@@ -28,23 +28,22 @@ def get_weather():
         }, None
     except requests.RequestException as e:
         return None, f"Weather API error: {e}"
-
-# --- Page Setup ---
+        
+# Page Set Up
 st.set_page_config(page_title="Live Weather Tracker", page_icon="🌡️", layout="wide")
 st.title("🌡️ Open-Meteo: Current Weather in Denver")
 st.caption("Live temperature and wind speed with short-term history.")
 
-# --- Auto Refresh Controls ---
+# Auto Refresh Controls
 st.subheader("🔁 Auto Refresh Settings")
 refresh_sec = st.slider("Refresh every (sec)", 10, 120, 30)
 auto_refresh = st.toggle("Enable auto-refresh", value=False)
 st.caption(f"Last refreshed at: {time.strftime('%H:%M:%S')}")
 
-# --- Session State History ---
 if "weather_history" not in st.session_state:
     st.session_state.weather_history = pd.DataFrame(columns=["time", "temperature", "wind"])
 
-# --- Fetch New Data ---
+# Fetch New Data
 data, err = get_weather()
 if err:
     st.warning(err)
@@ -58,11 +57,9 @@ else:
     # Keep only last 20 entries
     st.session_state.weather_history = st.session_state.weather_history.tail(20)
 
-    # --- Display Table ---
     st.subheader("Recent Weather Data")
     st.dataframe(st.session_state.weather_history, use_container_width=True)
 
-    # --- Plot Time-Series Chart ---
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
@@ -94,7 +91,6 @@ else:
 
     st.plotly_chart(fig, use_container_width=True)
 
-# --- Auto Refresh Logic ---
 if auto_refresh:
     time.sleep(refresh_sec)
     get_weather.clear()
