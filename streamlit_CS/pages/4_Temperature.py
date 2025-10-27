@@ -13,13 +13,6 @@ def get_weather():
 
 df = get_weahter()
 
-# Sample DataFrame (replace with your actual data)
-df = pd.DataFrame({
-    'time': pd.date_range(start='2025-10-26 00:00', periods=24, freq='H'),
-    'temperature': [45 + i*0.5 for i in range(24)],
-    'wind': [5 + (i % 5) for i in range(24)]
-})
-
 # Create figure
 fig = go.Figure()
 
