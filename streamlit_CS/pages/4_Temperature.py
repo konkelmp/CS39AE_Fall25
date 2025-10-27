@@ -1,50 +1,35 @@
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
+import requests
+import plotly.express as px
+import time
 
-lat, lon = 39.7392, -104.9903  # Denver
-wurl = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,wind_speed_10m"
-@st.cache_data(ttl=600)
-def get_weather():
-    r = requests.get(wurl, timeout=10); r.raise_for_status()
-    j = r.json()["current"]
-    return pd.DataFrame([{"time": pd.to_datetime(j["time"]),
-                          "temperature": j["temperature_2m"],
-                          "wind": j["wind_speed_10m"]}])
+COINS = ["bitcoin", "ethereum"]
+VS = "usd"
+HEADERS = {"User-Agent": "msudenver-dataviz-class/1.0", "Accept": "application/json"}
 
-df = get_weahter()
+def build_url(ids):
+    return f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies={VS}"
 
-# Create figure
-fig = go.Figure()
+API_URL = build_url(COINS)
 
-# Temperature trace
-fig.add_trace(go.Scatter(
-    x=df['time'],
-    y=df['temperature'],
-    name='Temperature (°F)',
-    mode='lines+markers',
-    line=dict(color='firebrick'),
-    yaxis='y1'
-))
-
-# Wind trace
-fig.add_trace(go.Scatter(
-    x=df['time'],
-    y=df['wind'],
-    name='Wind Speed (mph)',
-    mode='lines+markers',
-    line=dict(color='royalblue'),
-    yaxis='y2'
-))
-
-# Layout with dual y-axes
-fig.update_layout(
-    title='Weather Data Over Time',
-    xaxis=dict(title='Time'),
-    yaxis=dict(title='Temperature (°F)', side='left'),
-    yaxis2=dict(title='Wind Speed (mph)', overlaying='y', side='right'),
-    legend=dict(x=0.01, y=0.99),
-    margin=dict(l=40, r=40, t=40, b=40)
+# Tiny sample to keep the demo working even if the API is rate-limiting
+SAMPLE_DF = pd.DataFrame(
+    [{"coin": "bitcoin", VS: 68000}, {"coin": "ethereum", VS: 3500}]
 )
 
-# Show chart
-fig.show()
+st.set_page_config(page_title="Live API Demo (Simple)", page_icon="📡", layout="wide")
+# Disable fade/transition so charts don't blink between reruns
+st.markdown("""
+    <style>
+      [data-testid="stPlotlyChart"], .stPlotlyChart, .stElementContainer {
+        transition: none !important;
+        opacity: 1 !important;
+      }
+    </style>
+""", unsafe_allow_html=True)
+
+st.title("📡 Simple Live Data Demo (CoinGecko)")
+st.caption("Friendly demo with manual refresh + fallback data so it never crashes.")
+
