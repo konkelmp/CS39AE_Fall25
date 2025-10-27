@@ -54,10 +54,10 @@ if err:
 else:
     st.dataframe(df, use_container_width=True)
 
-   # --- Plotly Line Chart with Dual Y-Axis --
+   # --- Plotly Line Chart with Dual Y-Axis ---
 
     fig = go.Figure()
-
+    
     # Temperature trace
     fig.add_trace(go.Scatter(
         x=df['time'],
@@ -67,7 +67,7 @@ else:
         line=dict(color='firebrick'),
         yaxis='y1'
     ))
-
+    
     # Wind trace
     fig.add_trace(go.Scatter(
         x=df['time'],
@@ -77,18 +77,30 @@ else:
         line=dict(color='royalblue'),
         yaxis='y2'
     ))
-
-    # Layout with dual y-axes
+    
+    # Layout with realistic axis ranges
     fig.update_layout(
         title='Current Weather in Denver',
         xaxis=dict(title='Time'),
-        yaxis=dict(title='Temperature (°F)', side='left'),
-        yaxis2=dict(title='Wind Speed (mph)', overlaying='y', side='right'),
+        yaxis=dict(
+            title='Temperature (°F)',
+            side='left',
+            range=[0, 100],  # Adjust based on expected temperature range
+            showgrid=True
+        ),
+        yaxis2=dict(
+            title='Wind Speed (mph)',
+            overlaying='y',
+            side='right',
+            range=[0, 40],  # Adjust based on expected wind speed range
+            showgrid=False
+        ),
         legend=dict(x=0.01, y=0.99),
         margin=dict(l=40, r=40, t=40, b=40)
     )
     
     st.plotly_chart(fig, use_container_width=True)
+    
 
 # --- Auto Refresh Logic ---
 if auto_refresh:
