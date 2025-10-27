@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 import requests
 import time
@@ -53,16 +54,40 @@ if err:
 else:
     st.dataframe(df, use_container_width=True)
 
-    # --- Plotly Chart ---
-    fig = px.bar(
-        df.melt(id_vars="time", value_vars=["temperature", "wind"]),
-        x="variable",
-        y="value",
-        color="variable",
-        title="Current Temperature and Wind Speed",
-        labels={"value": "Measurement", "variable": "Metric"},
-        text_auto=True
+   # --- Plotly Line Chart with Dual Y-Axis --
+
+    fig = go.Figure()
+
+    # Temperature trace
+    fig.add_trace(go.Scatter(
+        x=df['time'],
+        y=df['temperature'],
+        name='Temperature (°F)',
+        mode='lines+markers',
+        line=dict(color='firebrick'),
+        yaxis='y1'
+    ))
+
+    # Wind trace
+    fig.add_trace(go.Scatter(
+        x=df['time'],
+        y=df['wind'],
+        name='Wind Speed (mph)',
+        mode='lines+markers',
+        line=dict(color='royalblue'),
+        yaxis='y2'
+    ))
+
+    # Layout with dual y-axes
+    fig.update_layout(
+        title='Current Weather in Denver',
+        xaxis=dict(title='Time'),
+        yaxis=dict(title='Temperature (°F)', side='left'),
+        yaxis2=dict(title='Wind Speed (mph)', overlaying='y', side='right'),
+        legend=dict(x=0.01, y=0.99),
+        margin=dict(l=40, r=40, t=40, b=40)
     )
+    
     st.plotly_chart(fig, use_container_width=True)
 
 # --- Auto Refresh Logic ---
