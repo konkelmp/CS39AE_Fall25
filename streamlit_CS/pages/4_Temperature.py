@@ -14,6 +14,23 @@ def build_url(ids):
 
 API_URL = build_url(COINS)
 
+@st.cache_data(ttl=300, show_spinner=False)   # Cache for 5 minutes
+
+def fetch_prices(url: str):
+    """Return (df, error_message). Never raise. Safe for beginners."""
+    try:
+        resp = requests.get(url, timeout=10, headers=HEADERS)
+        # Handle 429 and other non-200s
+        if resp.status_code == 429:
+            retry_after = resp.headers.get("Retry-After", "a bit")
+            return None, f"429 Too Many Requests — try again after {retry_after}s"
+        resp.raise_for_status()
+        data = resp.json()
+        df = pd.DataFrame(data).T.reset_index().rename(columns={"index": "coin"})
+        return df, None
+    except requests.RequestException as e:
+        return None, f"Network/HTTP error: {e}"
+
 # Tiny sample to keep the demo working even if the API is rate-limiting
 SAMPLE_DF = pd.DataFrame(
     [{"coin": "bitcoin", VS: 68000}, {"coin": "ethereum", VS: 3500}]
@@ -32,23 +49,6 @@ st.markdown("""
 
 st.title("📡 Simple Live Data Demo (CoinGecko)")
 st.caption("Friendly demo with manual refresh + fallback data so it never crashes.")
-
-@st.cache_data(ttl=300, show_spinner=False)   # Cache for 5 minutes
-
-def fetch_prices(url: str):
-    """Return (df, error_message). Never raise. Safe for beginners."""
-    try:
-        resp = requests.get(url, timeout=10, headers=HEADERS)
-        # Handle 429 and other non-200s
-        if resp.status_code == 429:
-            retry_after = resp.headers.get("Retry-After", "a bit")
-            return None, f"429 Too Many Requests — try again after {retry_after}s"
-        resp.raise_for_status()
-        data = resp.json()
-        df = pd.DataFrame(data).T.reset_index().rename(columns={"index": "coin"})
-        return df, None
-    except requests.RequestException as e:
-        return None, f"Network/HTTP error: {e}"
 
 # --- Auto Refresh Controls ---
 st.subheader("🔁 Auto Refresh Settings")
