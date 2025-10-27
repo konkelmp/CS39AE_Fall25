@@ -7,7 +7,7 @@ import time
 
 # --- Weather API Setup ---
 lat, lon = 39.7392, -104.9903  # Denver
-wurl = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,wind_speed_10m&temperature_unit=fahrenheit"
+wurl = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
 
 @st.cache_data(ttl=600)
 def get_weather():
